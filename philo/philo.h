@@ -48,4 +48,6 @@ typedef struct s_param
 	int	time_to_sleep;
 }	t_param;
 
+int	atoi_safe(const char *str);
+
 #endif
