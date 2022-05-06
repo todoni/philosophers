@@ -18,27 +18,11 @@
 
 typedef struct timeval	t_time;
 
-typedef struct s_fork_mutex
+typedef struct s_chopstick_mutex
 {
-	pthread_mutex_t	right_fork;
-	pthread_mutex_t	left_fork;
-}	t_fork;
-
-typedef struct s_philo
-{
-	pthread_t	philosopher;
-	int			num_philosopher;
-	int			start_time;
-	int			time_of_last_meal;
-	t_fork		philo_fork;
-}	t_philo;
-
-typedef struct s_node
-{
-	struct s_node	*left;
-	t_philo			philo;
-	struct s_node	*right;
-}	t_node;
+	pthread_mutex_t	*right_chopstick;
+	pthread_mutex_t	*left_chopstick;
+}	t_chopstick;
 
 typedef struct s_param
 {
@@ -46,7 +30,19 @@ typedef struct s_param
 	int	time_to_die;
 	int	time_to_eat;
 	int	time_to_sleep;
+	int	number_of_times_philo_must_eat;
 }	t_param;
+
+typedef struct s_philo
+{
+	pthread_t	philosopher;
+	int			philo_num;
+	int			start_time;
+	int			time_of_last_meal;
+	t_chopstick	chopstick;
+	t_param		params;
+	int			eat;
+}	t_philo;
 
 int	atoi_safe(const char *str);
 
