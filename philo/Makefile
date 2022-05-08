@@ -20,7 +20,7 @@ vpath %.c ./
 SRC = $(addsuffix .c, $(FILES))
 OBJECTS = $(addprefix $(OBJECT_DIR)/, $(addsuffix .o, $(FILES)))
 
-CC = cc -g
+CC = cc -g -fsanitize=thread
 CFLAGS = -Wall -Wextra -Werror
 
 NAME = philo

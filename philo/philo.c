@@ -21,6 +21,8 @@
 //void	sleep();
 //void	think();
 
+pthread_mutex_t	mu = PTHREAD_MUTEX_INITIALIZER;
+
 void	*life_of_philosopher(void *arg)
 {
 	t_time	cur;
@@ -43,11 +45,13 @@ void	*life_of_philosopher(void *arg)
 		gettimeofday(&cur, NULL);
 		time = cur.tv_sec * 1000 + cur.tv_usec / 1000;
 		printf("[%llu] philosopher %d is eating\n", time - philo->start_time, philo->philo_num);
+		pthread_mutex_lock(&mu);
 		philo->time_of_last_meal = time;
+		pthread_mutex_unlock(&mu);
 		usleep(philo->params.time_to_eat * 1000);
 		++philo->eat;
-		pthread_mutex_unlock(philo->chopstick.left);
 		pthread_mutex_unlock(philo->chopstick.right);
+		pthread_mutex_unlock(philo->chopstick.left);
 		gettimeofday(&cur, NULL);
 		time = cur.tv_sec * 1000 + cur.tv_usec / 1000;
 		cur_time = time;
@@ -82,7 +86,9 @@ void	*life_of_philosopher_alone(void *arg)
 		gettimeofday(&cur, NULL);
 		time = cur.tv_sec * 1000 + cur.tv_usec / 1000;
 		printf("[%llu] philosopher %d is eating\n", time - philo->start_time, philo->philo_num);
+		pthread_mutex_lock(&mu);
 		philo->time_of_last_meal = time;
+		pthread_mutex_unlock(&mu);
 		usleep(philo->params.time_to_eat * 1000);
 		++philo->eat;
 		pthread_mutex_unlock(philo->chopstick.left);
@@ -112,12 +118,14 @@ void	*death_monitoring(void *arg)
 	{
 		gettimeofday(&t, NULL);
 		time = t.tv_sec * 1000 + t.tv_usec / 1000;
-		if ((int)(time - philo[index].time_of_last_meal) >= philo[index].params.time_to_die || philo->death == 1)
+		pthread_mutex_lock(&mu);
+		if ((int)(time - philo[index].time_of_last_meal) >= philo[index].params.time_to_die)
 		{
 			gettimeofday(&t, NULL);
-			printf("[%lld] philosopher %d died\n", (t.tv_sec * 1000)+ (t.tv_usec / 1000) - philo->start_time, index + 1);
+			printf("[%lld] philosopher %d died\n", (t.tv_sec * 1000) + (t.tv_usec / 1000) - philo->start_time, index + 1);
 			break ;
 		}
+		pthread_mutex_unlock(&mu);
 		++index;
 		if (index == philo->params.number_of_philosopher)
 			index = 0;
