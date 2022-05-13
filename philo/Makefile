@@ -6,7 +6,7 @@
 #    By: sohan <sohan@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/03/11 15:38:21 by sohan             #+#    #+#              #
-#    Updated: 2022/05/13 16:42:09 by sohan            ###   ########.fr        #
+#    Updated: 2022/05/13 18:18:55 by sohan            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ vpath %.c ./
 SRC = $(addsuffix .c, $(FILES))
 OBJECTS = $(addprefix $(OBJECT_DIR)/, $(addsuffix .o, $(FILES)))
 
-CC = cc -g -fsanitize=thread
+CC = cc -g
 CFLAGS = -Wall -Wextra -Werror -pthread
 
 NAME = philo

@@ -6,7 +6,7 @@
 /*   By: sohan <sohan@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/06 16:04:34 by sohan             #+#    #+#             */
-/*   Updated: 2022/05/06 16:04:44 by sohan            ###   ########.fr       */
+/*   Updated: 2022/05/13 18:22:59 by sohan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,11 @@ typedef struct s_param
 typedef struct s_philo
 {
 	pthread_t				philosopher;
+	pthread_mutex_t				*common;
 	int						philo_num;
 	unsigned long long int	start_time;
 	unsigned long long int	time_of_last_meal;
+	unsigned long long int	time_of_last_meal_end;
 	t_chopstick				chopstick;
 	t_param					params;
 	int						eat;
