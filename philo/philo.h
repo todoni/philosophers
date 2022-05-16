@@ -37,10 +37,16 @@ typedef struct s_philo
 {
 	pthread_t				philosopher;
 	pthread_mutex_t				*common;
+	pthread_mutex_t				*print;
 	int						philo_num;
 	unsigned long long int	start_time;
 	unsigned long long int	time_of_last_meal;
+	unsigned long long int	time_of_last_meal_copy;
 	unsigned long long int	time_of_last_meal_end;
+	unsigned long long int	time_of_sleep_end;
+	unsigned long long int	time_of_think_end;
+	unsigned long long int	time_of_pickup_left;
+	unsigned long long int	time_of_pickup_right;
 	t_chopstick				chopstick;
 	t_param					params;
 	int						eat;
