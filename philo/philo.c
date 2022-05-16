@@ -6,7 +6,7 @@
 /*   By: sohan <sohan@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/06 16:04:48 by sohan             #+#    #+#             */
-/*   Updated: 2022/05/06 16:04:52 by sohan            ###   ########.fr       */
+/*   Updated: 2022/05/13 18:34:53 by sohan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,46 +17,82 @@
 
 //void	pickup_chopstick();
 //void	putdown_chopstick();
-//void	eat();
+void	eat();
 //void	sleep();
 //void	think();
 
-pthread_mutex_t	mu = PTHREAD_MUTEX_INITIALIZER;
+void	eat(void *arg)
+{
+	t_time			cur;
+	unsigned long long int	time;
+	t_philo			*philo;
+
+	philo = arg;
+	gettimeofday(&cur, NULL);
+	time = cur.tv_sec * 1000 + cur.tv_usec / 1000;
+	while ((int)time - (int)philo->time_of_last_meal <= philo->params.time_to_eat)
+	{
+		usleep(10);
+		gettimeofday(&cur, NULL);
+		time = cur.tv_sec * 1000 + cur.tv_usec / 1000;
+	}
+}
+
+void	sleepp(void *arg)
+{
+	t_time			cur;
+	unsigned long long int	time;
+	unsigned long long int	cur_time;
+	t_philo			*philo;
+
+	philo = arg;
+	gettimeofday(&cur, NULL);
+	time = cur.tv_sec * 1000 + cur.tv_usec / 1000;
+	cur_time = time;
+	while ((int)cur_time - (int)time <= philo->params.time_to_sleep)
+	{
+		usleep(10);
+		gettimeofday(&cur, NULL);
+		cur_time = cur.tv_sec * 1000 + cur.tv_usec / 1000;
+	}
+}
 
 void	*life_of_philosopher(void *arg)
 {
 	t_time	cur;
 	t_philo	*philo;
 	unsigned long long int	time;
-	unsigned long long int	cur_time;
-	int	ret_mutex;
+	//unsigned long long int	cur_time;
+	//int	ret_mutex;
 
 	philo = arg;
 	while (1)
 	{
-		ret_mutex = pthread_mutex_lock(philo->chopstick.left);
-		gettimeofday(&cur, NULL);
-		time = cur.tv_sec * 1000 + cur.tv_usec / 1000;
-		printf("[%llu] philosopher %d has taken a left fork\n", time - philo->start_time, philo->philo_num);
-		ret_mutex = pthread_mutex_lock(philo->chopstick.right);
+		pthread_mutex_lock(philo->chopstick.left);
+		//gettimeofday(&cur, NULL);
+		//time = cur.tv_sec * 1000 + cur.tv_usec / 1000;
+		//printf("[%llu] philosopher %d has taken a left fork\n", time - philo->start_time, philo->philo_num);
+		pthread_mutex_lock(philo->chopstick.right);
 		gettimeofday(&cur, NULL);
 		time = cur.tv_sec * 1000 + cur.tv_usec / 1000;
 		printf("[%llu] philosopher %d has taken a right fork\n", time - philo->start_time, philo->philo_num);
-		gettimeofday(&cur, NULL);
-		time = cur.tv_sec * 1000 + cur.tv_usec / 1000;
+		//gettimeofday(&cur, NULL);
+		//time = cur.tv_sec * 1000 + cur.tv_usec / 1000;
 		printf("[%llu] philosopher %d is eating\n", time - philo->start_time, philo->philo_num);
-		pthread_mutex_lock(&mu);
+		pthread_mutex_lock(philo->common);
 		philo->time_of_last_meal = time;
-		pthread_mutex_unlock(&mu);
-		usleep(philo->params.time_to_eat * 1000);
+		pthread_mutex_unlock(philo->common);
+		eat(arg);
+		//usleep(philo->params.time_to_eat * 1000);
 		++philo->eat;
 		pthread_mutex_unlock(philo->chopstick.right);
 		pthread_mutex_unlock(philo->chopstick.left);
 		gettimeofday(&cur, NULL);
 		time = cur.tv_sec * 1000 + cur.tv_usec / 1000;
-		cur_time = time;
+		//cur_time = time;
 		printf("[%llu] philosopher %d is sleeping\n", time - philo->start_time, philo->philo_num);
-		usleep(philo->params.time_to_sleep * 1000);
+		sleepp(arg);
+		//usleep(philo->params.time_to_sleep * 1000);
 		gettimeofday(&cur, NULL);
 		time = cur.tv_sec * 1000 + cur.tv_usec / 1000;
 		printf("[%llu] philosopher %d is thinking\n", time - philo->start_time, philo->philo_num);
@@ -69,34 +105,36 @@ void	*life_of_philosopher_alone(void *arg)
 	t_time	cur;
 	t_philo	*philo;
 	unsigned long long int	time;
-	int	ret_mutex;
+	//int	ret_mutex;
 
 	philo = arg;
 	while (1)
 	{
 		//eat();
-		ret_mutex = pthread_mutex_lock(philo->chopstick.right);
-		gettimeofday(&cur, NULL);
-		time = cur.tv_sec * 1000 + cur.tv_usec / 1000;
-		printf("[%llu] philosopher %d has taken a right fork\n", time - philo->start_time, philo->philo_num);
-		ret_mutex = pthread_mutex_lock(philo->chopstick.left);
+		pthread_mutex_lock(philo->chopstick.right);
+		//gettimeofday(&cur, NULL);
+		//time = cur.tv_sec * 1000 + cur.tv_usec / 1000;
+		//printf("[%llu] philosopher %d has taken a right fork\n", time - philo->start_time, philo->philo_num);
+		pthread_mutex_lock(philo->chopstick.left);
 		gettimeofday(&cur, NULL);
 		time = cur.tv_sec * 1000 + cur.tv_usec / 1000;
 		printf("[%llu] philosopher %d has taken a left fork\n", time - philo->start_time, philo->philo_num);
-		gettimeofday(&cur, NULL);
-		time = cur.tv_sec * 1000 + cur.tv_usec / 1000;
+		//gettimeofday(&cur, NULL);
+		//time = cur.tv_sec * 1000 + cur.tv_usec / 1000;
 		printf("[%llu] philosopher %d is eating\n", time - philo->start_time, philo->philo_num);
-		pthread_mutex_lock(&mu);
+		pthread_mutex_lock(philo->common);
 		philo->time_of_last_meal = time;
-		pthread_mutex_unlock(&mu);
-		usleep(philo->params.time_to_eat * 1000);
+		pthread_mutex_unlock(philo->common);
+		eat(arg);
+		//usleep(philo->params.time_to_eat * 1000);
 		++philo->eat;
 		pthread_mutex_unlock(philo->chopstick.left);
 		pthread_mutex_unlock(philo->chopstick.right);
 		gettimeofday(&cur, NULL);
 		time = cur.tv_sec * 1000 + cur.tv_usec / 1000;
 		printf("[%llu] philosopher %d is sleeping\n", time - philo->start_time, philo->philo_num);
-		usleep(philo->params.time_to_sleep * 1000);
+		sleepp(arg);
+		//usleep(philo->params.time_to_sleep * 1000);
 		gettimeofday(&cur, NULL);
 		time = cur.tv_sec * 1000 + cur.tv_usec / 1000;
 		printf("[%llu] philosopher %d is thinking\n", time - philo->start_time, philo->philo_num);
@@ -118,34 +156,38 @@ void	*death_monitoring(void *arg)
 	{
 		gettimeofday(&t, NULL);
 		time = t.tv_sec * 1000 + t.tv_usec / 1000;
-		pthread_mutex_lock(&mu);
-		if ((int)(time - philo[index].time_of_last_meal) >= philo[index].params.time_to_die)
+		pthread_mutex_lock(philo[index].common);
+		if ((int)(time - philo[index].time_of_last_meal) >= philo[index].params.time_to_die || philo->death == 1)
 		{
-			gettimeofday(&t, NULL);
-			printf("[%lld] philosopher %d died\n", (t.tv_sec * 1000) + (t.tv_usec / 1000) - philo->start_time, index + 1);
+			//gettimeofday(&t, NULL);
+			printf("[%lld] philosopher %d died\n", time - philo->start_time, index + 1);
 			break ;
 		}
-		pthread_mutex_unlock(&mu);
+		pthread_mutex_unlock(philo[index].common);
 		++index;
 		if (index == philo->params.number_of_philosopher)
 			index = 0;
+		//usleep(10);
 	}
 	return ((void *)1);
 }
 
-void	init_time(t_philo *philo, int size)
+void	init_time(t_philo *philo, int size, pthread_mutex_t *mu)
 {
 	struct timeval t;
 	int	i;
+	unsigned long long int	cur;
 	
 	i = 0;
 	gettimeofday(&t, NULL);
+	cur = (t.tv_sec * 1000) + (t.tv_usec / 1000);
 	while (i < size)
 	{	
-		philo[i].start_time = (t.tv_sec * 1000) + (t.tv_usec / 1000);
+		philo[i].start_time = cur;
 		philo[i].time_of_last_meal = philo[i].start_time;
 		philo[i].eat = 0;
 		philo[i].philo_num = i + 1;
+		philo[i].common = mu;
 		++i;
 	}
 }
@@ -189,15 +231,16 @@ int	main(int argc, char **argv)
 {
 	t_param			p;
 	pthread_mutex_t	*chopstick;
+	pthread_mutex_t	mu;
 	t_philo			*philo;
-	int				index;
+	//int				index;
 	pthread_t		death_monitor;
 	void			*death = NULL;
 
 	if (argc != 5 && argc != 6)
 		return (-1);
 	p.number_of_philosopher = atoi_safe(argv[1]);
-	index = p.number_of_philosopher;
+	//index = p.number_of_philosopher;
 	p.time_to_die = atoi_safe(argv[2]);
 	p.time_to_eat = atoi_safe(argv[3]);
 	p.time_to_sleep = atoi_safe(argv[4]);
@@ -212,9 +255,10 @@ int	main(int argc, char **argv)
 	chopstick = malloc(p.number_of_philosopher * sizeof(pthread_mutex_t));
 	if (!chopstick)
 		return (-1);
+	pthread_mutex_init(&mu, NULL);
 	init_philo(philo, &p);
 	init_mutex(chopstick, philo);
-	init_time(philo, p.number_of_philosopher);
+	init_time(philo, p.number_of_philosopher, &mu);
 	pthread_create(&death_monitor, NULL, death_monitoring, philo);
 	--p.number_of_philosopher;
 	while (p.number_of_philosopher > -1)
@@ -224,6 +268,7 @@ int	main(int argc, char **argv)
 		else
 			pthread_create(&philo[p.number_of_philosopher].philosopher, NULL, life_of_philosopher_alone, &philo[p.number_of_philosopher]);
 		--p.number_of_philosopher;
+		//usleep(10);
 	}
 	//while (death != (void *)1){;};
 	pthread_join(death_monitor, (void **)&death);
