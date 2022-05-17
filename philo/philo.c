@@ -35,6 +35,7 @@ void	eat(void *arg)
 	{
 		gettimeofday(&cur, NULL);
 		time = cur.tv_sec * 1000 + cur.tv_usec / 1000;
+		usleep(1000);
 	}
 	philo->time_of_last_meal_end = time;
 }
@@ -53,6 +54,7 @@ void	sleepp(void *arg)
 	{
 		gettimeofday(&cur, NULL);
 		cur_time = cur.tv_sec * 1000 + cur.tv_usec / 1000;
+		usleep(1000);
 	}
 	philo->time_of_sleep_end = cur_time;
 }
@@ -71,9 +73,9 @@ void	*death_monitoring(void *arg)
 	num = philo[index].params.number_of_philosopher;
 	while (1)
 	{
-		ret_mutex = pthread_mutex_lock(philo[index].params.common);
 		gettimeofday(&t, NULL);
 		time = t.tv_sec * 1000 + t.tv_usec / 1000;
+		ret_mutex = pthread_mutex_lock(philo[index].params.common);
 		if ((int)(time - philo[index].time_of_last_meal) >= philo[index].params.time_to_die)
 		{
 			printf("\033[0;31m[%lld] philosopher %d died[%d]\n\033[0m", time - philo[index].start_time, index + 1, ret_mutex);
@@ -83,6 +85,7 @@ void	*death_monitoring(void *arg)
 		++index;
 		if (index == num)
 			index = 0;
+		usleep(1000);
 	}
 	return ((void *)1);
 }
@@ -166,8 +169,8 @@ void	*life_of_philosoper_odd(void *arg)
 		philo->time_of_last_meal = time;
 		pthread_mutex_unlock(philo->params.common);
 		eat(arg);
-		pthread_mutex_unlock(philo->chopstick.right);
 		pthread_mutex_unlock(philo->chopstick.left);
+		pthread_mutex_unlock(philo->chopstick.right);
 		pthread_mutex_lock(philo->params.common);
 		gettimeofday(&cur, NULL);
 		time = cur.tv_sec * 1000 + cur.tv_usec / 1000;
@@ -181,6 +184,7 @@ void	*life_of_philosoper_odd(void *arg)
 		//printf("[%llu] philosopher %d is thinking\n", philo->time_of_sleep_end - philo->start_time, philo->philo_num);
 		printf("[%llu] philosopher %d is thinking\n", time - philo->start_time, philo->philo_num);
 		pthread_mutex_unlock(philo->params.common);
+		usleep(200);
 	}
 	return (NULL);
 }
@@ -224,6 +228,7 @@ void	*life_of_philosoper_even(void *arg)
 		//printf("[%llu] philosopher %d is thinking\n", philo->time_of_sleep_end - philo->start_time, philo->philo_num);
 		printf("[%llu] philosopher %d is thinking\n", time - philo->start_time, philo->philo_num);
 		pthread_mutex_unlock(philo->params.common);
+		usleep(200);
 	}
 	return (NULL);
 }
