@@ -31,6 +31,7 @@ typedef struct s_param
 	int	time_to_eat;
 	int	time_to_sleep;
 	int	number_of_times_philo_must_eat;
+	int	*flag_end;
 	pthread_mutex_t				*common;
 	pthread_mutex_t				*print;
 }	t_param;
@@ -45,6 +46,8 @@ typedef struct s_philo
 	unsigned long long int	time_of_sleep_end;
 	t_chopstick				chopstick;
 	t_param					params;
+	int						eat;
+	int						eat_flag;
 }	t_philo;
 
 int	atoi_safe(const char *str);
