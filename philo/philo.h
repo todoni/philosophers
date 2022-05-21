@@ -15,7 +15,7 @@
 
 # include <pthread.h>
 
-typedef	unsigned long long int	t_ull_int;
+typedef unsigned long long int	t_ull_int;
 
 typedef struct s_chopstick_mutex
 {
@@ -55,6 +55,14 @@ typedef struct s_philo
 	int			eat_flag;
 }	t_philo;
 
-int	atoi_safe(const char *str);
+int			atoi_safe(const char *str);
+int			create_threads(t_philo *philo, t_arg *arg);
+int			join_threads(t_philo *philo, t_arg *arg);
+void		destroy_mutexes(pthread_mutex_t *chopstick, \
+							pthread_mutex_t *common, int num);
+t_ull_int	get_ms_time(void);
+void		print_philo_state(t_philo *philo, const char *arg);
+void		*end_monitoring(void *arg);
+void		*life_of_philosoper(t_philo *philo);
 
 #endif

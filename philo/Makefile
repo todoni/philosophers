@@ -12,16 +12,17 @@
 
 OBJECT_DIR = objects
 FILES = \
-		philo\
+		main\
 		atoi_safe\
+		life_of_philosopher\
+		utils\
+		monitor
 
 vpath %.c ./
 
 SRC = $(addsuffix .c, $(FILES))
 OBJECTS = $(addprefix $(OBJECT_DIR)/, $(addsuffix .o, $(FILES)))
 
-#ifdef SANITIZER
-#	${SANITIZER}
 CC = cc -g $(if $(SANITIZER),-fsanitize=$(SANITIZER))
 CFLAGS = -Wall -Wextra -Werror
 
@@ -42,9 +43,13 @@ $(OBJECT_DIR)/%.o: %.c
 clean:
 	rm -rf $(OBJECT_DIR)
 
-fclean: clean
+fclean:
+	rm -rf $(OBJECT_DIR)
 	rm -f $(NAME)
 
-re : fclean all
+re :
+	rm -rf $(OBJECT_DIR)
+	rm -f $(NAME)
+	make $(NAME)
 
 .PHONY: all clean fclean re
