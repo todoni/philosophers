@@ -14,9 +14,8 @@
 # define PHILO_H
 
 # include <pthread.h>
-# include <sys/time.h>
 
-typedef struct timeval	t_time;
+typedef	unsigned long long int	t_ull_int;
 
 typedef struct s_chopstick_mutex
 {
@@ -24,30 +23,36 @@ typedef struct s_chopstick_mutex
 	pthread_mutex_t	*right;
 }	t_chopstick;
 
+typedef struct s_common
+{
+	int				end;
+	pthread_mutex_t	common;
+	pthread_t		end_monitor;
+}	t_arg;
+
 typedef struct s_param
 {
-	int	number_of_philosopher;
-	int	time_to_die;
-	int	time_to_eat;
-	int	time_to_sleep;
-	int	number_of_times_philo_must_eat;
-	int	*flag_end;
-	pthread_mutex_t				*common;
-	pthread_mutex_t				*print;
+	int				number_of_philosopher;
+	int				time_to_die;
+	int				time_to_eat;
+	int				time_to_sleep;
+	int				number_of_times_philo_must_eat;
+	int				*flag_end;
+	pthread_mutex_t	*common;
 }	t_param;
 
 typedef struct s_philo
 {
-	pthread_t				philosopher;
-	int						philo_num;
-	unsigned long long int	start_time;
-	unsigned long long int	time_of_last_meal;
-	unsigned long long int	time_of_last_meal_end;
-	unsigned long long int	time_of_sleep_end;
-	t_chopstick				chopstick;
-	t_param					params;
-	int						eat;
-	int						eat_flag;
+	pthread_t	philosopher;
+	int			philo_num;
+	t_ull_int	start_time;
+	t_ull_int	time_of_last_meal;
+	t_ull_int	time_of_last_meal_end;
+	t_ull_int	time_of_sleep_end;
+	t_chopstick	chopstick;
+	t_param		params;
+	int			eat;
+	int			eat_flag;
 }	t_philo;
 
 int	atoi_safe(const char *str);
