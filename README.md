@@ -13,9 +13,9 @@ $ make
 ## Usage
 다음의 인자가 필요합니다.
 - number_of_philosophers: 철학자의 수
-- time_to_die: 죽지 않기 위한 시간
-- time_to_eat: 밥을 먹는데 걸리는 시간
-- time_to_sleep: 잠을 자는데 걸리는 시간
+- time_to_die[ms]: 죽지 않기 위한 시간
+- time_to_eat[ms]: 밥을 먹는데 걸리는 시간
+- time_to_sleep[ms]: 잠을 자는데 걸리는 시간
 - [number_of_times_each_philosophers_must_eat]: 각 철학자들이 식사를 해야 하는 최소 횟수(optional)
 <br>
 
